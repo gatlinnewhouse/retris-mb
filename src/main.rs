@@ -26,8 +26,8 @@ fn main() -> ! {
 #[cfg(feature = "debug")]
 #[entry]
 fn main() -> ! {
-    use rtt_target::{rprintln, rtt_init_print};
     use crate::mylib::beep::{beep, repeat_beep};
+    use rtt_target::{rprintln, rtt_init_print};
     rtt_init_print!();
     // Take ownership of the Board struct
     let board = Board::take().unwrap();

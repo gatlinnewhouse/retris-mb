@@ -7,7 +7,7 @@
 //! Original code by Bart Massey with modifications by Gatlin Newhouse
 use microbit::{
     hal::{prelude::*, Timer},
-    pac::{TIMER1, TIMER2},
+    pac::TIMER1,
 };
 
 use crate::BEEP;

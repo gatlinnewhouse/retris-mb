@@ -4,9 +4,11 @@
 //!
 //! Acts as an abstraction layer for what we want to do with the board
 use microbit::{
-    hal::{twim, Timer, gpio::{p0::P0_00, Disconnected}},
+    hal::{
+        gpio::{p0::P0_00, Disconnected},
+        twim, Timer,
+    },
     pac::{twim0::frequency::FREQUENCY_A, TIMER0, TIMER1, TIMER2},
-    gpio::SPEAKER,
     Board,
 };
 
