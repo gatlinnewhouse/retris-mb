@@ -53,5 +53,13 @@ fn main() -> ! {
             rprintln!("logo pressed");
             repeat_beep(3u8, 75u16, &mut inputs.delay)
         }
+        if inputs.accel.tilt_left() {
+            rprintln!("tilted left");
+            repeat_beep(1u8, 75u16, &mut inputs.delay)
+        }
+        if inputs.accel.tilt_right() {
+            rprintln!("tilted right");
+            repeat_beep(2u8, 75u16, &mut inputs.delay)
+        }
     }
 }

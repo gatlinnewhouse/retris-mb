@@ -51,4 +51,36 @@ impl Accel {
         }
         None
     }
+
+    /// Tilted left sensor
+    ///
+    /// # Returns
+    /// * `bool` - If the sensor is tilted left
+    pub fn tilt_left(&mut self) -> bool {
+        let data = self.accel.accel_data();
+        if data.is_ok() {
+            // Account for some noise in the input which when perfectly still can vary
+            if data.unwrap().x < -500 {
+                return true;
+            }
+        }
+        false
+        //TODO: delay reading tilt input to prevent corrective tilts that happen when users try to reset to neutral
+    }
+
+    /// Tilted right sensor
+    ///
+    /// # Returns
+    /// * `bool` - If the sensor is tilted right
+    pub fn tilt_right(&mut self) -> bool {
+        let data = self.accel.accel_data();
+        if data.is_ok() {
+            // Account for some noise in the input which when perfectly still can vary
+            if data.unwrap().x > 500 {
+                return true;
+            }
+        }
+        false
+        //TODO: delay reading tilt input to prevent corrective tilts that happen when users try to reset to neutral
+    }
 }
