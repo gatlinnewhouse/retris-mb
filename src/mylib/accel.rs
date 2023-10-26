@@ -4,10 +4,10 @@
 //!
 //! Original source:
 //! <https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs>
-use microbit::{hal::twim, pac::TWIM0};
 use lsm303agr::{
     interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
 };
+use microbit::{hal::twim, pac::TWIM0};
 use rtt_target::rprintln;
 
 /// Custom typedef for the accelerometer to shorten the typename

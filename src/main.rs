@@ -7,8 +7,8 @@ mod mylib;
 use cortex_m_rt::entry;
 use microbit::hal::prelude::*;
 use microbit::{
-    Board,
     pac::{interrupt, TIMER2},
+    Board,
 };
 use mylib::Inputs;
 use panic_rtt_target as _;

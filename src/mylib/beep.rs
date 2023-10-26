@@ -6,9 +6,10 @@
 //!
 //! Original code by Bart Massey with modifications by Gatlin Newhouse
 
-use crate::*;
-
+use crate::mylib::Timer;
+use crate::BEEP;
 use microbit::pac::TIMER1;
+use embedded_hal::prelude::_embedded_hal_blocking_delay_DelayMs;
 
 /// Length of one cycle of beep in milliseconds.
 pub const BEEP_PERIOD: u16 = 2000;
@@ -22,6 +23,7 @@ pub const BEEP_TIME: u32 = 20;
 #[macro_export]
 macro_rules! microbit_beep {
     ($timer:ident) => {
+        use core::cell::RefCell;
         /// Global state of beep.
         pub static BEEP: cortex_m::interrupt::Mutex<RefCell<Option<Beep>>> =
             cortex_m::interrupt::Mutex::new(RefCell::new(None));
@@ -110,7 +112,6 @@ macro_rules! microbit_beep {
 /// Start a beep. This function is asynchronous: it returns
 /// immediately.
 pub fn beep() {
-    use embedded_hal::prelude::*;
     cortex_m::interrupt::free(|cs| {
         if let Some(b) = BEEP.borrow(cs).borrow_mut().as_mut() {
             b.note_time = BEEP_TIME;
