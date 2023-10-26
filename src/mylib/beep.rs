@@ -8,8 +8,8 @@
 
 use crate::mylib::Timer;
 use crate::BEEP;
-use microbit::pac::TIMER1;
 use embedded_hal::prelude::_embedded_hal_blocking_delay_DelayMs;
+use microbit::pac::TIMER1;
 
 /// Length of one cycle of beep in milliseconds.
 pub const BEEP_PERIOD: u16 = 2000;
