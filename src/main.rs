@@ -6,9 +6,14 @@
 mod mylib;
 use cortex_m_rt::entry;
 use microbit::hal::prelude::*;
-use microbit::Board;
+use microbit::{
+    Board,
+    pac::{interrupt, TIMER2},
+};
 use mylib::Inputs;
 use panic_rtt_target as _;
+
+microbit_beep!(TIMER2);
 
 /// Main function for the game
 #[cfg(not(feature = "debug"))]

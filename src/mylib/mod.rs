@@ -9,12 +9,20 @@ use microbit::{
     Board,
 };
 
+mod beep;
+
 #[cfg(feature = "buttons")]
 mod buttons;
 #[cfg(feature = "logo")]
 mod logo;
 #[cfg(feature = "accelerometer")]
 mod accel;
+#[cfg(not(feature = "screen"))]
+mod tetrominos;
+#[cfg(not(feature = "screen"))]
+mod pixeldisplay;
+#[cfg(feature = "screen")]
+mod screen;
 
 /// Inputs for the game as a struct with feature compilation
 pub struct Inputs {
