@@ -48,6 +48,13 @@ macro_rules! microbit_beep {
 
         impl Beep {
             /// Make a new structure for handling beeps.
+            ///
+            /// # Arguments
+            /// * `beep_timer` - The timer to use for beeping, usually TIMER2
+            /// * `speaker_pin` - The pin to use for the speaker, P0_00 on the micro:bit v2
+            ///
+            /// # Returns
+            /// * `Self` - The beep struct
             pub fn new(
                 beep_timer: $timer,
                 speaker_pin: microbit::hal::gpio::Pin<microbit::hal::gpio::Disconnected>,
@@ -95,6 +102,10 @@ macro_rules! microbit_beep {
         }
 
         /// Set up the beep system.
+        ///
+        /// # Arguments
+        /// * `beep_timer` - The timer to use for beeping, usually TIMER2
+        /// * `speaker_pin` - The pin to use for the speaker, P0_00 on the micro:bit v2
         pub fn init_beep(
             beep_timer: $timer,
             speaker_pin: microbit::hal::gpio::Pin<microbit::hal::gpio::Disconnected>,
@@ -112,8 +123,7 @@ macro_rules! microbit_beep {
     };
 }
 
-/// Start a beep. This function is asynchronous: it returns
-/// immediately.
+/// Start a beep. This function is asynchronous: it returns immediately.
 pub fn beep() {
     cortex_m::interrupt::free(|cs| {
         if let Some(b) = BEEP.borrow(cs).borrow_mut().as_mut() {
@@ -124,6 +134,11 @@ pub fn beep() {
 }
 
 /// Beep "beeps" times with a delay between beeps.
+///
+/// # Arguments
+/// * `beeps` - The number of beeps to make in u8
+/// * `delay` - The delay between beeps in milliseconds as u16
+/// * `board_timer` - The board timer to use for the delay of beeps
 pub fn repeat_beep(beeps: u8, delay: u16, board_timer: &mut Timer<TIMER1>) {
     for _ in 0..beeps {
         beep();
