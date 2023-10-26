@@ -23,7 +23,9 @@ fn main() -> ! {
 fn main() -> ! {
     use rtt_target::{rprintln, rtt_init_print};
     rtt_init_print!();
+    // Take ownership of the Board struct
     let board = Board::take().unwrap();
+    // Create our input sources
     let mut inputs = Inputs::new(board);
     // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
