@@ -34,9 +34,7 @@ impl Accel {
         }
         sensor.init().unwrap();
         sensor.set_accel_odr(AccelOutputDataRate::Hz50).unwrap();
-
-        rprintln!("normal mode");
-        sensor.set_accel_mode(AccelMode::Normal).unwrap();
+        sensor.set_accel_mode(AccelMode::HighResolution).unwrap();
         Self { accel: sensor }
     }
 
@@ -58,9 +56,9 @@ impl Accel {
     /// * `bool` - If the sensor is tilted left
     pub fn tilt_left(&mut self) -> bool {
         let data = self.accel.accel_data();
-        if data.is_ok() {
+        if let Ok(data) = data {
             // Account for some noise in the input which when perfectly still can vary
-            if data.unwrap().x < -500 {
+            if data.x < -500 {
                 return true;
             }
         }
@@ -74,9 +72,9 @@ impl Accel {
     /// * `bool` - If the sensor is tilted right
     pub fn tilt_right(&mut self) -> bool {
         let data = self.accel.accel_data();
-        if data.is_ok() {
+        if let Ok(data) = data {
             // Account for some noise in the input which when perfectly still can vary
-            if data.unwrap().x > 500 {
+            if data.x > 500 {
                 return true;
             }
         }
