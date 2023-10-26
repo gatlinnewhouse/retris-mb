@@ -7,6 +7,7 @@ edition = "2021"
 cortex-m-rt = "0.7"
 embedded-hal = "0.2.7"
 libm = "0.2.7"
+lsm303agr = "0.2.0"
 microbit-v2 = "0.13.0"
 nanorand = { version = "0.7.0", default-features = false, features = ["pcg64"] }
 rtt-target = "0.4"
@@ -21,3 +22,11 @@ features = ["cortex-m"]
 [dependencies.cortex-m]
 version = "0.7"
 features = ["inline-asm", "critical-section-single-core"]
+
+# Features to enable on the micro:bit v2 control scheme
+[features]
+default = ["logo", "buttons", "accelerometer", "demo"]
+demo = []
+buttons = []
+logo = []
+accelerometer = []
