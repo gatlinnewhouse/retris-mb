@@ -5,11 +5,12 @@
 //! Taken from my `breakout` project for the Embedded Rust class
 //!
 //! Original code by Bart Massey with modifications by Gatlin Newhouse
+use microbit::{
+    hal::{prelude::*, Timer},
+    pac::{TIMER1, TIMER2},
+};
 
-use crate::mylib::Timer;
 use crate::BEEP;
-use embedded_hal::prelude::_embedded_hal_blocking_delay_DelayMs;
-use microbit::pac::TIMER1;
 
 /// Length of one cycle of beep in milliseconds.
 pub const BEEP_PERIOD: u16 = 2000;
@@ -24,6 +25,8 @@ pub const BEEP_TIME: u32 = 20;
 macro_rules! microbit_beep {
     ($timer:ident) => {
         use core::cell::RefCell;
+        use mylib::beep::BEEP_PERIOD;
+
         /// Global state of beep.
         pub static BEEP: cortex_m::interrupt::Mutex<RefCell<Option<Beep>>> =
             cortex_m::interrupt::Mutex::new(RefCell::new(None));

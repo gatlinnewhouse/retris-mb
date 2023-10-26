@@ -4,12 +4,13 @@
 //!
 //! Acts as an abstraction layer for what we want to do with the board
 use microbit::{
-    hal::{twim, Timer},
-    pac::{twim0::frequency::FREQUENCY_A, TIMER0},
+    hal::{twim, Timer, gpio::{p0::P0_00, Disconnected}},
+    pac::{twim0::frequency::FREQUENCY_A, TIMER0, TIMER1, TIMER2},
+    gpio::SPEAKER,
     Board,
 };
 
-mod beep;
+pub mod beep;
 
 #[cfg(feature = "accelerometer")]
 mod accel;
@@ -35,8 +36,14 @@ pub struct Inputs {
     /// Accelerometer sensor on the back of the micro:bit v2
     #[cfg(feature = "accelerometer")]
     pub accel: accel::Accel,
-    /// Board timer for delays
-    pub timer: Timer<TIMER0>,
+    /// Board timer0
+    pub timer0: Timer<TIMER0>,
+    /// Board timer1 as delay
+    pub delay: Timer<TIMER1>,
+    /// Board timer2 as speaker_timer
+    pub speaker_timer: TIMER2,
+    /// Speaker pin
+    pub speaker_pin: P0_00<Disconnected>,
 }
 
 impl Inputs {
@@ -59,7 +66,10 @@ impl Inputs {
                     { twim::Twim::new(board.TWIM0, board.i2c_internal.into(), FREQUENCY_A::K100) };
                 accel::Accel::new(i2c)
             },
-            timer: Timer::new(board.TIMER0),
+            timer0: Timer::new(board.TIMER0),
+            delay: Timer::new(board.TIMER1),
+            speaker_timer: board.TIMER2,
+            speaker_pin: board.speaker_pin,
         }
     }
 }
