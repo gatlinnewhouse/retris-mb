@@ -10,7 +10,7 @@ use microbit::{
     pac::{interrupt, TIMER2},
     Board,
 };
-use mylib::Inputs;
+use mylib::GameAbstractionLayer;
 use panic_rtt_target as _;
 
 microbit_beep!(TIMER2);
@@ -32,34 +32,36 @@ fn main() -> ! {
     // Take ownership of the Board struct
     let board = Board::take().unwrap();
     // Create our input sources
-    let mut inputs = Inputs::new(board);
+    let mut gal = GameAbstractionLayer::new(board);
     // Initialize the speaker
-    init_beep(inputs.speaker_timer, inputs.speaker_pin.degrade());
+    init_beep(gal.speaker_timer, gal.speaker_pin.degrade());
     beep();
     // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
-        inputs.timer0.delay_ms(100_u32);
-        let data = inputs.accel.read_accel().unwrap();
+        gal.timer0.delay_ms(100_u32);
+        let data = gal.accel.read_accel().unwrap();
         rprintln!("x {} y {} z {}", data.0, data.1, data.2);
-        if let Some(true) = inputs.buttons.read_a() {
+        if let Some(true) = gal.buttons.read_a() {
             rprintln!("button a pressed");
-            repeat_beep(1u8, 75u16, &mut inputs.delay)
+            repeat_beep(1u8, 75u16, &mut gal.delay)
         }
-        if let Some(true) = inputs.buttons.read_b() {
+        if let Some(true) = gal.buttons.read_b() {
             rprintln!("button b pressed");
-            repeat_beep(2u8, 75u16, &mut inputs.delay)
+            repeat_beep(2u8, 75u16, &mut gal.delay)
         }
-        if let Some(true) = inputs.logo.read_logo() {
+        if let Some(true) = gal.logo.read_logo() {
             rprintln!("logo pressed");
-            repeat_beep(3u8, 75u16, &mut inputs.delay)
+            repeat_beep(3u8, 75u16, &mut gal.delay)
         }
-        if inputs.accel.tilt_left() {
+        if gal.accel.tilt_left() {
             rprintln!("tilted left");
-            repeat_beep(1u8, 75u16, &mut inputs.delay)
+            repeat_beep(1u8, 75u16, &mut gal.delay);
+            gal.timer0.delay_ms(100_u32);
         }
-        if inputs.accel.tilt_right() {
+        if gal.accel.tilt_right() {
             rprintln!("tilted right");
-            repeat_beep(2u8, 75u16, &mut inputs.delay)
+            repeat_beep(2u8, 75u16, &mut gal.delay);
+            gal.timer0.delay_ms(100_u32);
         }
     }
 }
