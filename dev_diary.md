@@ -13,3 +13,7 @@ I also started working on integrating the `accelerometer-poc` code into `mylib` 
 To test getting and reading all the different inputs I created a `"demo"` feature flag which will load all the inputs and print them to the serial console. This is the code that I used to test the inputs and make sure they were working as expected.
 
 I also added a `.editorconfig` to ensure I was using the same formatting `cargo clippy` recommends.
+
+I then developed controls for tilting left/right. I added this to the demo feature to play 1 beep if tilting left or pressing A, and 2 beeps if tilting right or pressing B. I also added a feature to play 3 beeps if the logo is touched.
+
+Then `Inputs` was renamed to `GameAbstractionLayer` to more accurately reflect the purpose of the module as I continue development.
