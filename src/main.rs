@@ -11,14 +11,14 @@ use mylib::Inputs;
 use panic_rtt_target as _;
 
 /// Main function for the game
-#[cfg(not(feature = "demo"))]
+#[cfg(not(feature = "debug"))]
 #[entry]
 fn main() -> ! {
     todo!();
 }
 
 /// Main function for the demo of inputs
-#[cfg(feature = "demo")]
+#[cfg(feature = "debug")]
 #[entry]
 fn main() -> ! {
     use rtt_target::{rprintln, rtt_init_print};
