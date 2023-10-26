@@ -28,7 +28,7 @@ mod screen;
 mod tetrominos;
 
 /// Inputs for the game as a struct with feature compilation
-pub struct Inputs {
+pub struct GameAbstractionLayer {
     /// A and B buttons on the front of the micro:bit v2
     #[cfg(feature = "buttons")]
     pub buttons: buttons::Buttons,
@@ -48,7 +48,7 @@ pub struct Inputs {
     pub speaker_pin: P0_00<Disconnected>,
 }
 
-impl Inputs {
+impl GameAbstractionLayer {
     /// Create a new instance of the inputs as a struct
     ///
     /// # Arguments
