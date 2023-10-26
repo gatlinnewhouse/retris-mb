@@ -43,8 +43,8 @@ impl Accel {
     /// # Returns
     /// * `Option<(i32, i32, i32)>` - The x, y, and z values of the accelerometer
     pub fn read_accel(&mut self) -> Option<(i32, i32, i32)> {
-        if self.accel.accel_status().unwrap().xyz_new_data {
-            let data = self.accel.accel_data().unwrap();
+        let data = self.accel.accel_data();
+        if let Ok(data) = data {
             return Some((data.x, data.y, data.z));
         }
         None
@@ -58,12 +58,11 @@ impl Accel {
         let data = self.accel.accel_data();
         if let Ok(data) = data {
             // Account for some noise in the input which when perfectly still can vary
-            if data.x < -500 {
+            if data.x < -400 {
                 return true;
             }
         }
         false
-        //TODO: delay reading tilt input to prevent corrective tilts that happen when users try to reset to neutral
     }
 
     /// Tilted right sensor
@@ -74,11 +73,10 @@ impl Accel {
         let data = self.accel.accel_data();
         if let Ok(data) = data {
             // Account for some noise in the input which when perfectly still can vary
-            if data.x > 500 {
+            if data.x > 400 {
                 return true;
             }
         }
         false
-        //TODO: delay reading tilt input to prevent corrective tilts that happen when users try to reset to neutral
     }
 }
