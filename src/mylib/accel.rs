@@ -3,7 +3,7 @@
 //! As modified from example branch `accelerometer-poc`
 //!
 //! Original source:
-//! https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs
+//! <https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs>
 use microbit::{hal::twim, pac::TWIM0};
 use lsm303agr::{
     interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,

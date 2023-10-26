@@ -3,7 +3,7 @@
 //! As modified from example branch `touch-logo`
 //!
 //! Original source:
-//! https://github.com/pdx-cs-embedded-rust/mb2-touch
+//! <https://github.com/pdx-cs-embedded-rust/mb2-touch>
 //!
 //! Thanks Bart!
 use microbit::hal::{
