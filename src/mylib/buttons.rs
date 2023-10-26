@@ -1,4 +1,6 @@
-//! Treat the A and B buttons as controls
+//! Use the A and B buttons as controls for the game
+//! Taken from my `breakout` project for Embedded Rust
+//! Gatlin Newhouse 2023
 use microbit::hal::{
     gpio::{p0::P0_14, p0::P0_23, Floating, Input},
     prelude::InputPin,

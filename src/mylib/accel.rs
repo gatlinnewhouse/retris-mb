@@ -1,11 +1,14 @@
-//! Accelorometer sensor as modified from example branch `accelerometer-poc`
+//! Use the acelorometer as a control for the game
+//! As modified from example branch `accelerometer-poc`
+//! https://github.com/nrf-rs/microbit/blob/main/examples/magnetometer/src/main.rs
+//! Gatlin Newhouse 2023
 use microbit::{hal::twim, pac::TWIM0};
-
 use lsm303agr::{
     interface::I2cInterface, mode::MagOneShot, AccelMode, AccelOutputDataRate, Lsm303agr,
 };
 use rtt_target::rprintln;
 
+/// Custom typedef for the accelerometer to shorten the typename
 type Sensor = Lsm303agr<I2cInterface<twim::Twim<TWIM0>>, MagOneShot>;
 
 pub struct Accel {

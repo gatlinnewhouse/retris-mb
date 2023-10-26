@@ -1,6 +1,8 @@
-//! Touch logo sensor as modified from example branch `touch-logo`
+//! Use the logo capacitive touch as a control for the game
+//! As modified from example branch `touch-logo`
 //! https://github.com/pdx-cs-embedded-rust/mb2-touch
 //! Thanks Bart!
+//! Gatlin Newhouse 2023
 use microbit::hal::{
     gpio::{p1::P1_04, Floating, Input},
     prelude::InputPin,

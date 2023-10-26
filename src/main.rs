@@ -25,6 +25,7 @@ fn main() -> ! {
     rtt_init_print!();
     let board = Board::take().unwrap();
     let mut inputs = Inputs::new(board);
+    // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
         inputs.timer.delay_ms(100_u32);
         let data = inputs.accel.read_accel().unwrap();
