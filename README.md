@@ -28,3 +28,6 @@ With the micro:bit v2 plugged in via USB:
 ```sh
 cargo embed --release
 ```
+
+## Videos
+

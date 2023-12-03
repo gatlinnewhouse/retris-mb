@@ -3,25 +3,33 @@
 //! Wraps inputs for the game based on cargo features enabled
 //!
 //! Acts as an abstraction layer for what we want to do with the board
+#[cfg(feature = "accelerometer")]
+use microbit::{hal::twim, pac::twim0::frequency::FREQUENCY_A};
 use microbit::{
     hal::{
         gpio::{p0::P0_00, Disconnected},
-        twim, Timer,
+        Timer,
     },
-    pac::{twim0::frequency::FREQUENCY_A, TIMER0, TIMER1, TIMER2},
+    pac::{TIMER0, TIMER1, TIMER2},
     Board,
 };
 
 pub mod beep;
+pub mod game;
+mod rand;
 
 #[cfg(feature = "accelerometer")]
 mod accel;
 #[cfg(feature = "buttons")]
 mod buttons;
+#[cfg(not(feature = "screen"))]
+pub mod font;
 #[cfg(feature = "logo")]
 mod logo;
 #[cfg(not(feature = "screen"))]
-mod pixeldisplay;
+mod pendolino;
+#[cfg(not(feature = "screen"))]
+pub mod pixeldisplay;
 #[cfg(feature = "screen")]
 mod screen;
 #[cfg(not(feature = "screen"))]
@@ -38,8 +46,11 @@ pub struct GameAbstractionLayer {
     /// Accelerometer sensor on the back of the micro:bit v2
     #[cfg(feature = "accelerometer")]
     pub accel: accel::Accel,
-    /// Board timer0
-    pub timer0: Timer<TIMER0>,
+    /// Display timer
+    pub display_timer: TIMER0,
+    /// Display pins
+    #[cfg(not(feature = "screen"))]
+    pub display_pins: microbit::gpio::DisplayPins,
     /// Board timer1 as delay
     pub delay: Timer<TIMER1>,
     /// Board timer2 as speaker_timer
@@ -68,7 +79,9 @@ impl GameAbstractionLayer {
                     { twim::Twim::new(board.TWIM0, board.i2c_internal.into(), FREQUENCY_A::K100) };
                 accel::Accel::new(i2c)
             },
-            timer0: Timer::new(board.TIMER0),
+            display_timer: board.TIMER0,
+            #[cfg(not(feature = "screen"))]
+            display_pins: board.display_pins,
             delay: Timer::new(board.TIMER1),
             speaker_timer: board.TIMER2,
             speaker_pin: board.speaker_pin,

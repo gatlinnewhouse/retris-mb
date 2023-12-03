@@ -25,7 +25,7 @@ features = ["inline-asm", "critical-section-single-core"]
 
 # Features to enable on the micro:bit v2 control scheme
 [features]
-default = ["debug"]                               # Default feature set (aka what I am using to play the game/turn in at end of quarter)
+default = ["classic"]                             # Default feature set (aka what I am using to play the game/turn in at end of quarter)
 debug = ["logo", "buttons", "accelerometer"]      # Demo mode to read inputs and rprintln to the serial console for debugging
 classic = ["logo", "buttons"]                     # Classic mode, no screen, just buttons and logo
 tilt = ["logo", "accelerometer"]                  # Tilt mode, no screen, just accelerometer and logo
