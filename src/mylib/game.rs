@@ -12,9 +12,9 @@ use crate::mylib::tetrominos::rotate_clockwise;
 
 /// Location of a piece, indexed by its bottom left corner
 #[derive(Clone, Copy)]
-struct PieceLocation {
-    row: usize,
-    col: usize,
+pub struct PieceLocation {
+    pub row: usize,
+    pub col: usize,
 }
 
 /// Initial location of a piece, starts at the top middle
@@ -24,7 +24,7 @@ pub struct GameState {
     /// Current piece falling
     falling_piece: [[u8; 2]; 2],
     /// Location of a piece, indexed by its bottom left corner
-    fall_loc: PieceLocation,
+    pub fall_loc: PieceLocation,
 }
 
 impl GameState {
@@ -38,39 +38,92 @@ impl GameState {
     /// Place the piece on the screen
     fn place_piece(&mut self, curr_screen: &mut Raster) {
         // Bottom left of current falling piece is placed at fall_loc
-        curr_screen[self.fall_loc.row][self.fall_loc.col] = 9 * self.falling_piece[1][0];
+        if self.falling_piece[1][0] == 1 {
+            curr_screen[self.fall_loc.row][self.fall_loc.col] = 9 * self.falling_piece[1][0];
+        }
         // Top left
-        curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 9 * self.falling_piece[0][0];
+        if self.falling_piece[0][0] == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 9 * self.falling_piece[0][0];
+        }
         // Bottom right
-        curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 9 * self.falling_piece[1][1];
+        if self.falling_piece[1][1] == 1 {
+            curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 9 * self.falling_piece[1][1];
+        }
         // Top right
-        curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 9 * self.falling_piece[0][1];
+        if self.falling_piece[0][1] == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] =
+                9 * self.falling_piece[0][1];
+        }
     }
-    /// Move the currently falling piece left or right
+    /// Move the currently falling piece left one column
     ///
     /// # Arguments
     /// * `curr_screen` - The current screen state
-    ///
-    /// # Returns
-    /// * The new piece location
-    fn move_piece(&mut self, curr_screen: &mut Raster) {
-        // Move left
-        if self.fall_loc.row > 0 {
-            self.fall_loc.row -= 1;
-            // Update the screen moving the piece left
+    pub fn move_left(&mut self, curr_screen: &mut Raster) {
+        if self.fall_loc.col != 0 {
+            // Bottom left of current falling piece is placed at fall_loc
+            if self.falling_piece[1][0] == 1 {
+                curr_screen[self.fall_loc.row][self.fall_loc.col] = 0;
+            }
+            // Top left
+            if self.falling_piece[0][0] == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+            }
+            // Bottom right
+            if self.falling_piece[1][1] == 1 {
+                curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 0;
+            }
+            // Top right
+            if self.falling_piece[0][1] == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            }
+            self.fall_loc.col -= 1;
+            self.place_piece(curr_screen);
         }
-        // Move right
-        if (self.fall_loc.row + 1) < 4 {
-            self.fall_loc.row += 1;
-            // Update the screen moving the piece right
+    }
+    /// Move the currently falling piece right one column
+    ///
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    pub fn move_right(&mut self, curr_screen: &mut Raster) {
+        if self.fall_loc.col + 1 != 4 {
+            // Bottom left of current falling piece is placed at fall_loc
+            if self.falling_piece[1][0] == 1 {
+                curr_screen[self.fall_loc.row][self.fall_loc.col] = 0;
+            }
+            // Top left
+            if self.falling_piece[0][0] == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+            }
+            // Bottom right
+            if self.falling_piece[1][1] == 1 {
+                curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 0;
+            }
+            // Top right
+            if self.falling_piece[0][1] == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            }
+            self.fall_loc.col += 1;
+            self.place_piece(curr_screen);
         }
     }
     /// Rotate the currently falling piece 90 degrees clockwise
     ///
-    /// # Returns
-    /// * The rotated piece
-    fn rotate_piece(&mut self) -> [[u8; 2]; 2] {
-        rotate_clockwise(self.falling_piece)
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    pub fn rotate_piece(&mut self, curr_screen: &mut Raster) {
+        if self.fall_loc.col != 4 {
+            // Bottom left of current falling piece is placed at fall_loc
+            curr_screen[self.fall_loc.row][self.fall_loc.col] = 0;
+            // Top left
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+            // Bottom right
+            curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 0;
+            // Top right
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            self.falling_piece = rotate_clockwise(self.falling_piece);
+            self.place_piece(curr_screen);
+        }
     }
     /// Drop the currently falling piece down one row
     ///

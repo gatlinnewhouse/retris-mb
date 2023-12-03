@@ -58,22 +58,27 @@ fn main() -> ! {
     // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
         gal.delay.delay_ms(100_u32);
+        let mut raster = Raster::default();
         a = gal.buttons.read_a();
         b = gal.buttons.read_b();
         logo = gal.logo.read_logo();
         if let Some(true) = gal.buttons.read_a() {
             rprintln!("button a pressed");
+            rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);
+            game.move_left(&mut raster);
             repeat_beep(1u8, 75u16, &mut gal.delay)
         }
         if let Some(true) = gal.buttons.read_b() {
             rprintln!("button b pressed");
+            rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);
+            game.move_right(&mut raster);
             repeat_beep(2u8, 75u16, &mut gal.delay)
         }
         if let Some(true) = gal.logo.read_logo() {
             rprintln!("logo pressed");
+            game.rotate_piece(&mut raster);
             repeat_beep(3u8, 75u16, &mut gal.delay)
         }
-        let mut raster = Raster::default();
         game.step(&mut raster, seed);
         display_frame(&raster);
     }
