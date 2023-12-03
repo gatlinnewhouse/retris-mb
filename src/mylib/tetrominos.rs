@@ -8,7 +8,7 @@ use crate::mylib::rand::random_range;
 use nanorand::Pcg64;
 
 /// Straight shape piece
-const STRAIGHT: [[u8; 2]; 2] = [[0, 1], [0, 1]];
+const STRAIGHT: [[u8; 2]; 2] = [[1, 0], [1, 0]];
 
 /// Square shape piece
 const SQUARE: [[u8; 2]; 2] = [[1, 1], [1, 1]];
@@ -38,4 +38,20 @@ pub fn get_random_tetromino(rng: &mut Pcg64) -> [[u8; 2]; 2] {
         4 => T,
         _ => panic!("Invalid random number"),
     }
+}
+
+/// Rotate a tetromino clockwise 90 degrees
+///
+/// # Arguments
+/// * `tetromino` - A tetromino shape value
+///
+/// # Returns
+/// * That tetromino rotated clockwise 90 degrees
+pub fn rotate_clockwise(tetromino: [[u8; 2]; 2]) -> [[u8; 2]; 2] {
+    let mut rotated = [[0; 2]; 2];
+    rotated[0][0] = tetromino[1][0];
+    rotated[0][1] = tetromino[0][0];
+    rotated[1][0] = tetromino[1][1];
+    rotated[1][1] = tetromino[0][1];
+    rotated
 }
