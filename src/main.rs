@@ -42,26 +42,15 @@ fn main() -> ! {
     // Setup the random number generator
     let mut rng = Pcg64::new_seed(1337);
     let mut seed = rng.generate();
-    // Initialize inputs to local variables as aliases
-    #[cfg(feature = "buttons")]
-    let mut a = gal.buttons.read_a();
-    #[cfg(feature = "buttons")]
-    let mut b = gal.buttons.read_b();
-    #[cfg(feature = "logo")]
-    let mut logo = gal.logo.read_logo();
-    #[cfg(feature = "accelerometer")]
-    let mut tilt_left = gal.accel.tilt_left();
-    #[cfg(feature = "accelerometer")]
-    let mut tilt_right = gal.accel.tilt_right();
     // Set up and run a game.
-    let mut game = GameState::new(tick);
+    let mut game = GameState::new();
+    // Set up screen raster
+    #[cfg(not(feature = "screen"))]
+    let mut raster = Raster::default();
     // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
-        gal.delay.delay_ms(100_u32);
-        let mut raster = Raster::default();
-        a = gal.buttons.read_a();
-        b = gal.buttons.read_b();
-        logo = gal.logo.read_logo();
+        gal.delay.delay_ms(tick);
+        seed = rng.generate();
         if let Some(true) = gal.buttons.read_a() {
             rprintln!("button a pressed");
             rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);

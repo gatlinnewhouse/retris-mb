@@ -24,19 +24,27 @@ const T: [[u8; 2]; 2] = [[1, 1], [0, 1]];
 
 /// Get a random tetromino
 ///
+/// Weighted against the straight piece (1/10 chance to get straight piece)
+///
 /// # Arguments
 /// * `rng` - A mutable reference to a Pcg64 random number generator.
 ///
 /// # Returns
 /// * A random tetromino shape const
 pub fn get_random_tetromino(rng: &mut Pcg64) -> [[u8; 2]; 2] {
-    match random_range(rng, 0, 5) {
-        0 => STRAIGHT,
-        1 => SQUARE,
-        2 => L,
-        3 => S,
-        4 => T,
-        _ => panic!("Invalid random number"),
+    let rand = random_range(rng, 0, 10);
+    match rand {
+        0 => L,
+        1 => S,
+        2 => T,
+        3 => SQUARE,
+        4 => STRAIGHT,
+        5 => L,
+        6 => S,
+        7 => T,
+        8 => SQUARE,
+        9 => L,
+        _ => T,
     }
 }
 

@@ -1,6 +1,9 @@
 //! Module for Game state and logic
 //!
 //! Helps processs frames, inputs, etc.
+use embedded_hal::blocking::delay::DelayMs;
+use microbit::hal::Timer;
+use microbit::pac::TIMER1;
 use nanorand::{Pcg64, Rng};
 
 #[cfg(not(feature = "screen"))]
@@ -22,6 +25,7 @@ const INITIAL_LOC: PieceLocation = PieceLocation { row: 1, col: 2 };
 
 pub struct GameState {
     /// Current piece falling
+    #[cfg(not(feature = "screen"))]
     falling_piece: [[u8; 2]; 2],
     /// Location of a piece, indexed by its bottom left corner
     pub fall_loc: PieceLocation,
@@ -29,28 +33,39 @@ pub struct GameState {
 
 impl GameState {
     /// Create a new GameState
-    pub fn new(tick: u16) -> Self {
+    #[cfg(not(feature = "screen"))]
+    pub fn new() -> Self {
         Self {
             falling_piece: [[0; 2]; 2],
             fall_loc: INITIAL_LOC,
         }
     }
     /// Place the piece on the screen
+    ///
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    #[cfg(not(feature = "screen"))]
     fn place_piece(&mut self, curr_screen: &mut Raster) {
         // Bottom left of current falling piece is placed at fall_loc
-        if self.falling_piece[1][0] == 1 {
+        if self.falling_piece[1][0] == 1 && curr_screen[self.fall_loc.row][self.fall_loc.col] == 0 {
             curr_screen[self.fall_loc.row][self.fall_loc.col] = 9 * self.falling_piece[1][0];
         }
         // Top left
-        if self.falling_piece[0][0] == 1 {
+        if self.falling_piece[0][0] == 1
+            && curr_screen[self.fall_loc.row - 1][self.fall_loc.col] == 0
+        {
             curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 9 * self.falling_piece[0][0];
         }
         // Bottom right
-        if self.falling_piece[1][1] == 1 {
+        if self.falling_piece[1][1] == 1
+            && curr_screen[self.fall_loc.row][self.fall_loc.col + 1] == 0
+        {
             curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 9 * self.falling_piece[1][1];
         }
         // Top right
-        if self.falling_piece[0][1] == 1 {
+        if self.falling_piece[0][1] == 1
+            && curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] == 0
+        {
             curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] =
                 9 * self.falling_piece[0][1];
         }
@@ -59,6 +74,7 @@ impl GameState {
     ///
     /// # Arguments
     /// * `curr_screen` - The current screen state
+    #[cfg(not(feature = "screen"))]
     pub fn move_left(&mut self, curr_screen: &mut Raster) {
         if self.fall_loc.col != 0 {
             // Bottom left of current falling piece is placed at fall_loc
@@ -85,6 +101,7 @@ impl GameState {
     ///
     /// # Arguments
     /// * `curr_screen` - The current screen state
+    #[cfg(not(feature = "screen"))]
     pub fn move_right(&mut self, curr_screen: &mut Raster) {
         if self.fall_loc.col + 1 != 4 {
             // Bottom left of current falling piece is placed at fall_loc
@@ -111,6 +128,7 @@ impl GameState {
     ///
     /// # Arguments
     /// * `curr_screen` - The current screen state
+    #[cfg(not(feature = "screen"))]
     pub fn rotate_piece(&mut self, curr_screen: &mut Raster) {
         if self.fall_loc.col != 4 {
             // Bottom left of current falling piece is placed at fall_loc
@@ -129,28 +147,122 @@ impl GameState {
     ///
     /// # Returns
     /// * The new piece location
-    fn drop_piece(&mut self) -> PieceLocation {
-        self.fall_loc.col += 1;
-        self.fall_loc
+    #[cfg(not(feature = "screen"))]
+    fn drop_piece(&mut self, curr_screen: &mut Raster) {
+        // Falling piece corners
+        let bottom_left = self.falling_piece[1][0];
+        let bottom_right = self.falling_piece[1][1];
+        let top_left = self.falling_piece[0][0];
+        let top_right = self.falling_piece[0][1];
+        // If either bottom corner is 1 and the falling location row is not 4 then
+        // move the piece down one row, and increment the falling location row
+        if (bottom_left == 1 || bottom_right == 1) && self.fall_loc.row != 4 {
+            self.fall_loc.row += 1;
+        }
+        // If both bottom corners are 0 and the falling location row is 4 then
+        // move the piece down one row, and increment the falling location row
+        if bottom_left == 0 && bottom_right == 0 && self.fall_loc.row == 4 {
+            self.fall_loc.row += 1;
+        }
+        // Set the current falling piece to 0 on the screen
+        if bottom_left == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+        }
+        if bottom_right == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+        }
+        if top_left == 1 {
+            curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
+        }
+        if top_right == 1 {
+            curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
+        }
+        // Place the piece on the screen
+        self.place_piece(curr_screen);
     }
     /// Add the currently falling piece to the solid blocks on the screen
     /// and reset the falling piece to nothing, reset the fall location to initial
     /// location.
-    fn add_piece(&mut self) {
-        todo!();
-    }
-    /// Check if the currently falling piece is colliding with the solid blocks
-    /// on the bottom of the screen or with the bottom of the screen
     ///
-    /// Adds the currently falling piece to the solid blocks if it is colliding
-    /// with either
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
     ///
     /// # Returns
-    /// * Collision location as indexes of the Raster
-    fn check_collision(&mut self) -> (usize, usize) {
-        todo!();
+    /// * True if a piece was added, false otherwise
+    #[cfg(not(feature = "screen"))]
+    fn add_piece(&mut self, curr_screen: &mut Raster) -> bool {
+        // Bottom left of current falling piece is placed at fall_loc
+        if self.falling_piece[1][0] == 1 {
+            curr_screen[self.fall_loc.row][self.fall_loc.col] = 5 * self.falling_piece[1][0];
+        }
+        // Top left
+        if self.falling_piece[0][0] == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 5 * self.falling_piece[0][0];
+        }
+        // Bottom right
+        if self.falling_piece[1][1] == 1 {
+            curr_screen[self.fall_loc.row][self.fall_loc.col + 1] = 5 * self.falling_piece[1][1];
+        }
+        // Top right
+        if self.falling_piece[0][1] == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] =
+                5 * self.falling_piece[0][1];
+        }
+        // Reset the falling piece and fall location
+        self.falling_piece = [[0; 2]; 2];
+        self.fall_loc = INITIAL_LOC;
+        // Return true if a piece was added
+        true
+    }
+    /// Check if the currently falling piece is colliding with the solid blocks
+    /// or with the bottom of the screen, if so add the piece to the solid blocks
+    /// on the screen
+    ///
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    ///
+    /// # Returns
+    /// * True if a piece was added, false otherwise
+    #[cfg(not(feature = "screen"))]
+    fn check_collision(&mut self, curr_screen: &mut Raster) -> bool {
+        // Current falling piece location
+        let row = self.fall_loc.row;
+        let col = self.fall_loc.col;
+        // Falling piece corners
+        let bottom_left = self.falling_piece[1][0];
+        let bottom_right = self.falling_piece[1][1];
+        let top_left = self.falling_piece[0][0];
+        let top_right = self.falling_piece[0][1];
+        // If either bottom corner is colliding with a solid block then add the
+        // piece to the solid screen
+        if row != 4 {
+            if bottom_left == 1 && curr_screen[row + 1][col] != 0 {
+                return self.add_piece(curr_screen);
+            }
+            if bottom_right == 1 && curr_screen[row + 1][col + 1] != 0 {
+                return self.add_piece(curr_screen);
+            }
+        } else if (bottom_left == 1 || bottom_right == 1) && row == 4 {
+            return self.add_piece(curr_screen);
+        }
+        // If either top corner is colliding with a solid block then add the piece
+        // to the solid screen otherwise check if the piece is at the bottom of the
+        // screen and add it to the solid screen if it is
+        if top_left == 1 && curr_screen[row][col] != 0 {
+            return self.add_piece(curr_screen);
+        } else if top_left == 1 && row == 5 {
+            return self.add_piece(curr_screen);
+        }
+        if top_right == 1 && curr_screen[row][col + 1] != 0 {
+            return self.add_piece(curr_screen);
+        } else if top_right == 1 && row == 5 {
+            return self.add_piece(curr_screen);
+        }
+        // Return false if no collision
+        false
     }
     /// Function to check for full rows, clear them, and drop the rest down a row
+    #[cfg(not(feature = "screen"))]
     pub fn clear_row(&mut self, raster: &mut Raster) -> Render {
         todo!();
     }
@@ -159,7 +271,15 @@ impl GameState {
         let mut rng = Pcg64::new_seed(seed);
         if self.falling_piece == [[0; 2]; 2] {
             self.falling_piece = get_random_tetromino(&mut rng);
+            self.place_piece(raster);
+        } else {
+            // if self.check_collision(raster) {
+            //     self.falling_piece = get_random_tetromino(&mut rng);
+            //     self.place_piece(raster);
+            //     return;
+            // } else {
+            self.drop_piece(raster);
+            // }
         }
-        self.place_piece(raster);
     }
 }
