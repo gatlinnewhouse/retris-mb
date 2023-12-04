@@ -25,14 +25,14 @@ features = ["inline-asm", "critical-section-single-core"]
 
 # Features to enable on the micro:bit v2 control scheme
 [features]
-default = ["classic"]                             # Default feature set (aka what I am using to play the game/turn in at end of quarter)
-debug = ["logo", "buttons", "accelerometer"]      # Demo mode to read inputs and rprintln to the serial console for debugging
-classic = ["logo", "buttons", "text"]             # Classic mode, no screen, just buttons and logo
-tilt = ["logo", "accelerometer"]                  # Tilt mode, no screen, just accelerometer and logo
-tilt_screen = ["logo", "accelerometer", "screen"] # Tilt mode, with screen, accelerometer, and logo
-classic_screen = ["logo", "buttons", "screen"]    # Classic mode, with screen, buttons, and logo
-buttons = []                                      # Use the A and B buttons on the micro:bit v2 as inputs for moving tetrominos
-logo = []                                         # Use the capacitive touch logo on the micro:bit v2 as an input for rotating tetrominos
-accelerometer = []                                # Use the accelerometer on the micro:bit v2 as an input for moving tetrominos
-screen = []                                       # Use an attached Adafruit 0.96” 160x80 Color TFT Display as a screen for the game
-text = []                                         # Use for rendering text on the screen
+default = ["classic"]                                 # Default feature set (aka what I am using to play the game/turn in at end of quarter)
+debug = ["logo", "buttons", "accelerometer", "text"]  # Demo mode to read inputs and rprintln to the serial console for debugging
+classic = ["logo", "buttons", "text"]                 # Classic mode, no screen, just buttons and logo
+tilt = ["logo", "accelerometer"]                      # Tilt mode, no screen, just accelerometer and logo
+tilt_screen = ["logo", "accelerometer", "screen"]     # Tilt mode, with screen, accelerometer, and logo
+classic_screen = ["logo", "buttons", "screen"]        # Classic mode, with screen, buttons, and logo
+buttons = []                                          # Use the A and B buttons on the micro:bit v2 as inputs for moving tetrominos
+logo = []                                             # Use the capacitive touch logo on the micro:bit v2 as an input for rotating tetrominos
+accelerometer = []                                    # Use the accelerometer on the micro:bit v2 as an input for moving tetrominos
+screen = []                                           # Use an attached Adafruit 0.96” 160x80 Color TFT Display as a screen for the game
+text = []                                             # Use for rendering text on the screen
