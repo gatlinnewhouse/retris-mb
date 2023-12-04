@@ -12,8 +12,7 @@ You can read the dev diary [here](dev_diary.md).
 - `thumbv7em-none-eabihf` target for Rust, installed via `rustup target add thumbv7em-none-eabihf`
 - [probe-rs](https://probe.rs/) for flashing the micro:bit v2 (successor to `probe-run`), installed via `cargo install probe-run`
   - `cargo-embed` for flashing the micro:bit v2, installed with `probe-rs`
-
-WIP (need to recreate installing from scratch to remember everything)
+- Make sure `rust-lld` is in your `$PATH` for `cargo-embed` to work
 
 ### Building
 
@@ -30,4 +29,6 @@ cargo embed --release
 ```
 
 ## Videos
+
+Demoing classic controls (buttons and logo touch) with the pixel display on the Micro:bit v2:
 
