@@ -41,3 +41,5 @@ Then I added block collision checking into the `drop_piece` function. This is a 
 So I started playtesting a bit. Outside of some frustration with pieces being fairly deterministic still, I found that things seemed to be working. I tweaked the tetromino randomness to stop generating so many square tetrominos. I thought maybe we could use the accelerometer to help seed the rng, but I also did not want to give players control over the rng. So I sat on that idea for a bit before deciding whether or not to implement it.
 
 Finally I cleaned up the [README](README.md) file to reflect the listed requirements on Canvas. I only needed to add some testing of the code and a video to the repo to complete the assignment.
+
+Upon some research, it appears that unit testing in a `no_std` environment can be done but requires [some workarounds](https://stackoverflow.com/questions/28185854/how-do-i-test-crates-with-no-std).
