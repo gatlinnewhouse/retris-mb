@@ -32,7 +32,7 @@ Next I added functions to move left, right, and rotate the falling tetromino. I 
 
 I added a function to drop the pieces and have them fall to the bottom of the screen. Then I worked on clearing full rows, and moving rows down after a row is cleared. I had the speaker beep for how many rows were cleared. I also improved the rng by generating more seeds.
 
-Adding a feature for "text" displaying on the screen allowed me to resolve some clippy warnings with conditional compilation.
+Adding a feature for "text" displaying on the screen allowed me to resolve some clippy warnings with conditional compilation. I added the text feature to display text on the micro:bit v2's screen, to do this I forked parts of [microbit-text](https://github.com/mattheww/microbit-text/)
 
 Next I added a game over check function to see if any columns had all five rows filled, if so I passed `7u8` as a return value back to `main.rs` instead of a number of rows cleared.
 
