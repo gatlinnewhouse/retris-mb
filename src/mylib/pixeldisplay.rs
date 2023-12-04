@@ -26,10 +26,16 @@ pub struct Render {
 #[cfg(feature = "text")]
 impl Render {
     /// Create a new Render from a Raster.
+    ///
+    /// # Arguments
+    /// * `raster` - A borrowed Raster type
     pub const fn new_from(raster: &Raster) -> Self {
         Self { raster: *raster }
     }
     /// Get the Raster from a Render.
+    ///
+    /// # Returns
+    /// * A borrowed Raster type of the current Render
     pub fn get(&self) -> &Raster {
         &self.raster
     }
@@ -73,7 +79,10 @@ macro_rules! microbit_display {
     };
 }
 
-/// Display a frame.
+/// Display a frame on the micro:bit v2's pixel display
+///
+/// # Arguments
+/// * `raster` - A borrowed Raster type
 pub fn display_frame(raster: &Raster) {
     let frame = GreyscaleImage::new(raster);
     cortex_m::interrupt::free(|cs| {
@@ -83,14 +92,18 @@ pub fn display_frame(raster: &Raster) {
     });
 }
 
-/// Clear frame
+/// Clear the micro:bit v2's pixel display
 #[cfg(feature = "text")]
 pub fn clear_display() {
     let clear = Raster::default();
     display_frame(&clear);
 }
 
-/// Scrolling text
+/// Scrolling text on the micro:bit v2's pixel display
+///
+/// # Arguments
+/// * `s` - A string slice
+/// * `board_timer` - A mutable reference to a TIMER1 timer
 #[cfg(feature = "text")]
 pub fn scroll_text(s: &str, board_timer: &mut Timer<TIMER1>) {
     let mut frame = Raster::default();

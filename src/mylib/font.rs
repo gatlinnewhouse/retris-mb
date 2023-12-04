@@ -37,6 +37,7 @@ pub const PRINTABLE_START: usize = 32;
 /// Number of characters in the standard font
 pub const PRINTABLE_COUNT: usize = 95;
 
+/// A 'hollow square' image for unknown characters
 const UNKNOWN: Render = Render::new_from(&[
     [1, 1, 1, 1, 1],
     [1, 0, 0, 0, 1],
@@ -48,6 +49,12 @@ const UNKNOWN: Render = Render::new_from(&[
 /// Returns an image representing the requested ascii character.
 ///
 /// If the requested character isn't printable, returns a 'hollow square' image.
+///
+/// # Arguments
+/// * `index` - The ascii code of the character to return
+///
+/// # Returns
+/// * A Render representing the requested character
 ///
 /// # Example
 ///
@@ -61,6 +68,12 @@ pub fn character(index: u8) -> &'static Render {
 }
 
 /// Returns a Render representing the requested ascii character.
+///
+/// # Arguments
+/// * `data` - A 5x5 array representing the character
+///
+/// # Returns
+/// * A Render representing the character in the data 5x5 array
 pub const fn font_entry(data: [u8; 5]) -> Render {
     // Note the data in the pendolino font uses the opposite column numbering
     // system to BitImage.
@@ -83,6 +96,12 @@ pub const fn font_entry(data: [u8; 5]) -> Render {
 }
 
 /// Function that returns boolean if char is wide or not (wide = 5 columns)
+///
+/// # Arguments
+/// * `c` - A char to check if it is wide or not
+///
+/// # Returns
+/// * `bool` - True if wide, false if not
 pub fn wide_char(c: char) -> bool {
     let wide_chars = ['G', 'g', 'a', 'M', 'm', 'V', 'v', 'N', 'T', 'R'];
     for wc in wide_chars.iter() {
