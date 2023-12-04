@@ -84,7 +84,7 @@ pub const fn font_entry(data: [u8; 5]) -> Render {
 
 /// Function that returns boolean if char is wide or not (wide = 5 columns)
 pub fn wide_char(c: char) -> bool {
-    let wide_chars = ['G', 'g', 'a', 'M', 'm', 'V', 'v', 'N', 'T'];
+    let wide_chars = ['G', 'g', 'a', 'M', 'm', 'V', 'v', 'N', 'T', 'R'];
     for wc in wide_chars.iter() {
         if *wc == c {
             return true;
