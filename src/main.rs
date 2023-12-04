@@ -48,7 +48,7 @@ fn play_game() -> ! {
     // Initialize the display
     init_display(gal.display_timer, gal.display_pins);
     // Setup the random number generator
-    let mut rng = Pcg64::new_seed(0);
+    let mut rng = Pcg64::new_seed(1337);
     let mut seed = rng.generate();
     // Set up and run a game.
     let mut game = GameState::new();
