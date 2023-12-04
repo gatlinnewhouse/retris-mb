@@ -1,13 +1,10 @@
 //! Module for Game state and logic
 //!
 //! Helps processs frames, inputs, etc.
-use embedded_hal::blocking::delay::DelayMs;
-use microbit::hal::Timer;
-use microbit::pac::TIMER1;
-use nanorand::{Pcg64, Rng};
+use nanorand::Pcg64;
 
 #[cfg(not(feature = "screen"))]
-use crate::mylib::pixeldisplay::{Raster, Render};
+use crate::mylib::pixeldisplay::Raster;
 #[cfg(not(feature = "screen"))]
 use crate::mylib::tetrominos::get_random_tetromino;
 #[cfg(not(feature = "screen"))]

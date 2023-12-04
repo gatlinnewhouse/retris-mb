@@ -31,3 +31,5 @@ Then I began assembling the game logic in the `game.rs` file as the `GameState` 
 Next I added functions to move left, right, and rotate the falling tetromino. I had to bounds check the tetromino to ensure it didn't go off the screen. An interesting wrinkle of this design is that in order to get a tetromino flush with an edge, you may have to rotate the tetromino. This is because the microbit needs static arrays for pieces and I cannot variably set a tetromino's size on the microbit.
 
 I added a function to drop the pieces and have them fall to the bottom of the screen. Then I worked on clearing full rows, and moving rows down after a row is cleared. I had the speaker beep for how many rows were cleared. I also improved the rng by generating more seeds.
+
+Adding a feature for "text" displaying on the screen allowed me to resolve some clippy warnings with conditional compilation.

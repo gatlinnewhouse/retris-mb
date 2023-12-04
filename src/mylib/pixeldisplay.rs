@@ -2,40 +2,28 @@
 //!
 //! For use when not using a Adafruit 0.96” 160x80 Color TFT Display
 //! Generic MicroBit v2 nonblocking display handler.
+#[cfg(feature = "text")]
 use crate::mylib::font::{character, wide_char};
 use crate::DISPLAY;
+#[cfg(feature = "text")]
 use embedded_hal::prelude::_embedded_hal_blocking_delay_DelayMs;
 use microbit::display::nonblocking::GreyscaleImage;
+#[cfg(feature = "text")]
 use microbit::hal::Timer;
+#[cfg(feature = "text")]
 use microbit::pac::TIMER1;
 
 /// LED array proxy for rendering. Indexed as row and then column.
 pub type Raster = [[u8; 5]; 5];
 
-/// Constant for smiley face.
-pub const SMILE: Raster = [
-    [0, 0, 0, 0, 0],
-    [0, 9, 0, 9, 0],
-    [0, 0, 0, 0, 0],
-    [9, 0, 0, 0, 9],
-    [0, 9, 9, 9, 0],
-];
-
-/// Constant for frowned face.
-pub const FROWN: Raster = [
-    [0, 0, 0, 0, 0],
-    [0, 9, 0, 9, 0],
-    [0, 0, 0, 0, 0],
-    [0, 9, 9, 9, 0],
-    [9, 0, 0, 0, 9],
-];
-
 /// Wrapper around a Raster to make it easier to use.
+#[cfg(feature = "text")]
 pub struct Render {
     raster: Raster,
 }
 
 /// Implementations for Render.
+#[cfg(feature = "text")]
 impl Render {
     /// Create a new Render from a Raster.
     pub const fn new_from(raster: &Raster) -> Self {
@@ -96,12 +84,14 @@ pub fn display_frame(raster: &Raster) {
 }
 
 /// Clear frame
+#[cfg(feature = "text")]
 pub fn clear_display() {
     let clear = Raster::default();
     display_frame(&clear);
 }
 
 /// Scrolling text
+#[cfg(feature = "text")]
 pub fn scroll_text(s: &str, board_timer: &mut Timer<TIMER1>) {
     let mut frame = Raster::default();
     display_frame(&frame);

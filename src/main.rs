@@ -50,7 +50,6 @@ fn main() -> ! {
     // Loop and read input data and print to serial console via probe-rs and rtt
     loop {
         gal.delay.delay_ms(tick);
-        seed = rng.generate();
         if let Some(true) = gal.buttons.read_a() {
             rprintln!("button a pressed");
             rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);
@@ -69,6 +68,7 @@ fn main() -> ! {
             repeat_beep(3u8, 75u16, &mut gal.delay)
         }
         let clr_rows = game.step(&mut raster, seed);
+        seed = rng.generate();
         if clr_rows > 0 {
             repeat_beep(clr_rows, 75u16, &mut gal.delay);
         }

@@ -22,11 +22,11 @@ mod rand;
 mod accel;
 #[cfg(feature = "buttons")]
 mod buttons;
-#[cfg(not(feature = "screen"))]
+#[cfg(feature = "text")]
 pub mod font;
 #[cfg(feature = "logo")]
 mod logo;
-#[cfg(not(feature = "screen"))]
+#[cfg(feature = "text")]
 mod pendolino;
 #[cfg(not(feature = "screen"))]
 pub mod pixeldisplay;

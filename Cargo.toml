@@ -35,3 +35,4 @@ buttons = []                                      # Use the A and B buttons on t
 logo = []                                         # Use the capacitive touch logo on the micro:bit v2 as an input for rotating tetrominos
 accelerometer = []                                # Use the accelerometer on the micro:bit v2 as an input for moving tetrominos
 screen = []                                       # Use an attached Adafruit 0.96” 160x80 Color TFT Display as a screen for the game
+text = []                                         # Use for rendering text on the screen
