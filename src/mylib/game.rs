@@ -142,26 +142,51 @@ impl GameState {
     }
     /// Drop the currently falling piece down one row
     ///
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    ///
     /// # Returns
-    /// * The new piece location
+    /// * 0 if the game is not over, 7 if the game is over
     #[cfg(not(feature = "screen"))]
-    fn drop_piece(&mut self, curr_screen: &mut Raster) {
+    fn drop_piece(&mut self, curr_screen: &mut Raster) -> u8 {
         // Falling piece corners
         let bottom_left = self.falling_piece[1][0];
         let bottom_right = self.falling_piece[1][1];
         let top_left = self.falling_piece[0][0];
         let top_right = self.falling_piece[0][1];
+        // Pieces on the board possibly blocking the falling piece
+        let top_left_board = curr_screen[self.fall_loc.row][self.fall_loc.col];
+        let top_right_board = curr_screen[self.fall_loc.row][self.fall_loc.col + 1];
         // If either bottom corner is 1 and the falling location row is not 4 then
         // move the piece down one row, and increment the falling location row
         if bottom_left == 1 || bottom_right == 1 {
             if self.fall_loc.row == 4 {
                 // If this is the final row and there are bottom corners then
                 // add it to the solid blocks
-                self.add_piece(curr_screen);
-                return;
-            } else {
-                // Otherwise move it down one row
-                self.fall_loc.row += 1;
+                if !self.add_piece(curr_screen) {
+                    // If the game is over then return 7
+                    return 7;
+                }
+                return 0;
+            } else if self.fall_loc.row != 4 {
+                let bottom_left_board = curr_screen[self.fall_loc.row + 1][self.fall_loc.col];
+                let bottom_right_board = curr_screen[self.fall_loc.row + 1][self.fall_loc.col + 1];
+                if (bottom_left == 1 && bottom_left_board == 5)
+                    || (bottom_right == 1 && bottom_right_board == 5)
+                    || (top_left == 1 && top_left_board == 5)
+                    || (top_right == 1 && top_right_board == 5)
+                {
+                    // If there is a solid block below the falling piece then
+                    // add it to the solid blocks
+                    if !self.add_piece(curr_screen) {
+                        // If the game is over then return 7
+                        return 7;
+                    }
+                    return 0;
+                } else {
+                    // Otherwise move it down one row
+                    self.fall_loc.row += 1;
+                }
             }
             // Set the current falling piece to 0 on the screen
             if bottom_left == 1 {
@@ -183,9 +208,20 @@ impl GameState {
             if self.fall_loc.row == 5 {
                 // If this is the final row and there are not bottom corners then
                 // add it to the solid blocks
-                self.add_piece(curr_screen);
+                if !self.add_piece(curr_screen) {
+                    // If the game is over then return 7
+                    return 7;
+                }
                 curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
                 curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            } else if top_left_board == 5 || top_right_board == 5 {
+                // If there is a solid block below the falling piece then
+                // add it to the solid blocks
+                if !self.add_piece(curr_screen) {
+                    // If the game is over then return 7
+                    return 7;
+                }
+                return 0;
             } else {
                 // Otherwise move it down one row
                 self.fall_loc.row += 1;
@@ -200,6 +236,8 @@ impl GameState {
         }
         // Place the piece on the screen
         self.place_piece(curr_screen);
+        // Return 0 if the game is not over
+        0
     }
     /// Add the currently falling piece to the solid blocks on the screen
     /// and reset the falling piece to nothing, reset the fall location to initial
@@ -209,7 +247,7 @@ impl GameState {
     /// * `curr_screen` - The current screen state
     ///
     /// # Returns
-    /// * True if a piece was added, false otherwise
+    /// * True if a piece was added, false if the game is over
     #[cfg(not(feature = "screen"))]
     fn add_piece(&mut self, curr_screen: &mut Raster) -> bool {
         // Bottom left of current falling piece is placed at fall_loc
@@ -229,6 +267,10 @@ impl GameState {
             curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] =
                 5 * self.falling_piece[0][1];
         }
+        // Check if any solid blocks are in the top row
+        if self.check_column(curr_screen) {
+            return false;
+        }
         // Reset the falling piece and fall location
         self.falling_piece = [[0; 2]; 2];
         self.fall_loc = INITIAL_LOC;
@@ -236,6 +278,12 @@ impl GameState {
         true
     }
     /// Function to check for full rows, clear them, and drop the rest down a row
+    ///
+    /// # Arguments
+    /// * `raster` - The current screen state
+    ///
+    /// # Returns
+    /// * The number of rows cleared
     #[cfg(not(feature = "screen"))]
     pub fn check_rows(&mut self, raster: &mut Raster) -> u8 {
         let mut count: u8 = 0;
@@ -281,20 +329,39 @@ impl GameState {
         }
         count
     }
+    /// Check if there are any solid blocks in the top row
+    ///
+    /// # Arguments
+    /// * `raster` - The current screen state
+    ///
+    /// # Returns
+    /// * True if there are blocks in the top row, false otherwise
+    #[cfg(not(feature = "screen"))]
+    fn check_column(&mut self, raster: &mut Raster) -> bool {
+        for col in 0..5 {
+            if raster[0][col] == 5 {
+                return true;
+            }
+        }
+        false
+    }
     /// Step the game state forward one frame
+    ///
+    /// # Arguments
+    /// * `raster` - The current screen state
+    /// * `seed` - The seed for the random number generator
+    ///
+    /// # Returns
+    /// * The number of rows cleared or 7 if the game is over
     pub fn step(&mut self, raster: &mut Raster, seed: u128) -> u8 {
         let mut rng = Pcg64::new_seed(seed);
         if self.falling_piece == [[0; 2]; 2] {
             self.falling_piece = get_random_tetromino(&mut rng);
             self.place_piece(raster);
         } else {
-            // if self.check_collision(raster) {
-            //     self.falling_piece = get_random_tetromino(&mut rng);
-            //     self.place_piece(raster);
-            //     return;
-            // } else {
-            self.drop_piece(raster);
-            // }
+            if self.drop_piece(raster) == 7 {
+                return 7;
+            }
             return self.check_rows(raster);
         }
         0

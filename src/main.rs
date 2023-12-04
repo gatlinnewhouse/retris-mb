@@ -4,10 +4,13 @@
 #![no_std]
 
 mod mylib;
+#[cfg(feature = "text")]
+use crate::mylib::pixeldisplay::scroll_text;
+#[cfg(feature = "text")]
+use crate::mylib::pixeldisplay::{clear_display, display_frame};
 use crate::mylib::{
     beep::{beep, repeat_beep},
     game::GameState,
-    pixeldisplay::display_frame,
     pixeldisplay::Raster,
     GameAbstractionLayer,
 };
@@ -69,8 +72,15 @@ fn main() -> ! {
         }
         let clr_rows = game.step(&mut raster, seed);
         seed = rng.generate();
-        if clr_rows > 0 {
+        if clr_rows > 0 && clr_rows != 7 {
             repeat_beep(clr_rows, 75u16, &mut gal.delay);
+        } else if clr_rows == 7 {
+            loop {
+                #[cfg(feature = "text")]
+                clear_display();
+                #[cfg(feature = "text")]
+                scroll_text("GAME OVER", &mut gal.delay);
+            }
         }
         display_frame(&raster);
         rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);

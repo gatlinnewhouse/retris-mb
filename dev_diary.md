@@ -33,3 +33,7 @@ Next I added functions to move left, right, and rotate the falling tetromino. I 
 I added a function to drop the pieces and have them fall to the bottom of the screen. Then I worked on clearing full rows, and moving rows down after a row is cleared. I had the speaker beep for how many rows were cleared. I also improved the rng by generating more seeds.
 
 Adding a feature for "text" displaying on the screen allowed me to resolve some clippy warnings with conditional compilation.
+
+Next I added a game over check function to see if any columns had all five rows filled, if so I passed `7u8` as a return value back to `main.rs` instead of a number of rows cleared.
+
+Then I added block collision checking into the `drop_piece` function. This is a core mechanic of tetris and after several failed attempts to implement this correctly, it was exciting to see it finally working.
