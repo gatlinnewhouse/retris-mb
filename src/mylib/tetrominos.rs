@@ -42,7 +42,7 @@ pub fn get_random_tetromino(rng: &mut Pcg64) -> [[u8; 2]; 2] {
         5 => L,
         6 => S,
         7 => T,
-        8 => SQUARE,
+        8 => L,
         9 => L,
         _ => T,
     }
