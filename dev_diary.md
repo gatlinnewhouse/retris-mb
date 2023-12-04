@@ -39,3 +39,5 @@ Next I added a game over check function to see if any columns had all five rows 
 Then I added block collision checking into the `drop_piece` function. This is a core mechanic of tetris and after several failed attempts to implement this correctly, it was exciting to see it finally working.
 
 So I started playtesting a bit. Outside of some frustration with pieces being fairly deterministic still, I found that things seemed to be working. I tweaked the tetromino randomness to stop generating so many square tetrominos. I thought maybe we could use the accelerometer to help seed the rng, but I also did not want to give players control over the rng. So I sat on that idea for a bit before deciding whether or not to implement it.
+
+Finally I cleaned up the [README](README.md) file to reflect the listed requirements on Canvas. I only needed to add some testing of the code and a video to the repo to complete the assignment.
