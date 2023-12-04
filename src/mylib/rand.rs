@@ -13,6 +13,8 @@ use nanorand::{Pcg64, Rng};
 /// # Returns
 /// * A random number between min and max.
 pub fn random_range(rng: &mut Pcg64, min: u8, max: u8) -> u8 {
+    let seed = rng.generate();
+    let mut rng = Pcg64::new_seed(seed);
     let r: u8 = rng.generate();
     r % (max - min) + min
 }

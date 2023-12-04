@@ -29,7 +29,7 @@ fn main() -> ! {
     use rtt_target::{rprintln, rtt_init_print};
     rtt_init_print!();
     // Tick time in milliseconds
-    let tick: u16 = 1000;
+    let tick: u16 = 1500;
     // Take ownership of the Board struct
     let board = Board::take().unwrap();
     // Create our input sources
@@ -40,7 +40,7 @@ fn main() -> ! {
     init_display(gal.display_timer, gal.display_pins);
     beep();
     // Setup the random number generator
-    let mut rng = Pcg64::new_seed(1337);
+    let mut rng = Pcg64::new_seed(0);
     let mut seed = rng.generate();
     // Set up and run a game.
     let mut game = GameState::new();
@@ -68,7 +68,11 @@ fn main() -> ! {
             game.rotate_piece(&mut raster);
             repeat_beep(3u8, 75u16, &mut gal.delay)
         }
-        game.step(&mut raster, seed);
+        let clr_rows = game.step(&mut raster, seed);
+        if clr_rows > 0 {
+            repeat_beep(clr_rows, 75u16, &mut gal.delay);
+        }
         display_frame(&raster);
+        rprintln!("col: {} row: {}", game.fall_loc.col, game.fall_loc.row);
     }
 }

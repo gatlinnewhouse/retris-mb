@@ -156,26 +156,50 @@ impl GameState {
         let top_right = self.falling_piece[0][1];
         // If either bottom corner is 1 and the falling location row is not 4 then
         // move the piece down one row, and increment the falling location row
-        if (bottom_left == 1 || bottom_right == 1) && self.fall_loc.row != 4 {
-            self.fall_loc.row += 1;
+        if bottom_left == 1 || bottom_right == 1 {
+            if self.fall_loc.row == 4 {
+                // If this is the final row and there are bottom corners then
+                // add it to the solid blocks
+                self.add_piece(curr_screen);
+                return;
+            } else {
+                // Otherwise move it down one row
+                self.fall_loc.row += 1;
+            }
+            // Set the current falling piece to 0 on the screen
+            if bottom_left == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+            }
+            if bottom_right == 1 {
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            }
+            if top_left == 1 {
+                curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
+            }
+            if top_right == 1 {
+                curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
+            }
         }
         // If both bottom corners are 0 and the falling location row is 4 then
         // move the piece down one row, and increment the falling location row
-        if bottom_left == 0 && bottom_right == 0 && self.fall_loc.row == 4 {
-            self.fall_loc.row += 1;
-        }
-        // Set the current falling piece to 0 on the screen
-        if bottom_left == 1 {
-            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
-        }
-        if bottom_right == 1 {
-            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
-        }
-        if top_left == 1 {
-            curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
-        }
-        if top_right == 1 {
-            curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
+        if bottom_left == 0 && bottom_right == 0 {
+            if self.fall_loc.row == 5 {
+                // If this is the final row and there are not bottom corners then
+                // add it to the solid blocks
+                self.add_piece(curr_screen);
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+                curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+            } else {
+                // Otherwise move it down one row
+                self.fall_loc.row += 1;
+                // Set the current falling piece to 0 on the screen
+                if top_left == 1 {
+                    curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
+                }
+                if top_right == 1 {
+                    curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
+                }
+            }
         }
         // Place the piece on the screen
         self.place_piece(curr_screen);
@@ -214,60 +238,54 @@ impl GameState {
         // Return true if a piece was added
         true
     }
-    /// Check if the currently falling piece is colliding with the solid blocks
-    /// or with the bottom of the screen, if so add the piece to the solid blocks
-    /// on the screen
-    ///
-    /// # Arguments
-    /// * `curr_screen` - The current screen state
-    ///
-    /// # Returns
-    /// * True if a piece was added, false otherwise
-    #[cfg(not(feature = "screen"))]
-    fn check_collision(&mut self, curr_screen: &mut Raster) -> bool {
-        // Current falling piece location
-        let row = self.fall_loc.row;
-        let col = self.fall_loc.col;
-        // Falling piece corners
-        let bottom_left = self.falling_piece[1][0];
-        let bottom_right = self.falling_piece[1][1];
-        let top_left = self.falling_piece[0][0];
-        let top_right = self.falling_piece[0][1];
-        // If either bottom corner is colliding with a solid block then add the
-        // piece to the solid screen
-        if row != 4 {
-            if bottom_left == 1 && curr_screen[row + 1][col] != 0 {
-                return self.add_piece(curr_screen);
-            }
-            if bottom_right == 1 && curr_screen[row + 1][col + 1] != 0 {
-                return self.add_piece(curr_screen);
-            }
-        } else if (bottom_left == 1 || bottom_right == 1) && row == 4 {
-            return self.add_piece(curr_screen);
-        }
-        // If either top corner is colliding with a solid block then add the piece
-        // to the solid screen otherwise check if the piece is at the bottom of the
-        // screen and add it to the solid screen if it is
-        if top_left == 1 && curr_screen[row][col] != 0 {
-            return self.add_piece(curr_screen);
-        } else if top_left == 1 && row == 5 {
-            return self.add_piece(curr_screen);
-        }
-        if top_right == 1 && curr_screen[row][col + 1] != 0 {
-            return self.add_piece(curr_screen);
-        } else if top_right == 1 && row == 5 {
-            return self.add_piece(curr_screen);
-        }
-        // Return false if no collision
-        false
-    }
     /// Function to check for full rows, clear them, and drop the rest down a row
     #[cfg(not(feature = "screen"))]
-    pub fn clear_row(&mut self, raster: &mut Raster) -> Render {
-        todo!();
+    pub fn check_rows(&mut self, raster: &mut Raster) -> u8 {
+        let mut count: u8 = 0;
+        let mut full_rows: [bool; 5] = [false; 5];
+        // Check for full rows, then keep track of them in full_rows
+        for row in 0..5 {
+            if raster[row][0] == 5
+                && raster[row][1] == 5
+                && raster[row][2] == 5
+                && raster[row][3] == 5
+                && raster[row][4] == 5
+            {
+                full_rows[row] = true;
+                count += 1;
+            }
+        }
+        // If no rows are full then return
+        if count == 0 {
+            return count;
+        }
+        // Clear full rows
+        for row in (0..5).rev() {
+            if full_rows[row] {
+                // If it's a full row then clear it
+                for col in 0..5 {
+                    raster[row][col] = 0;
+                }
+            }
+        }
+        // Move any non-full rows down
+        for row in (0..5).rev() {
+            for col in 0..5 {
+                if raster[row][col] == 5 {
+                    // If it is a solid block then move it down
+                    let mut curr_row = row;
+                    while curr_row != 4 && raster[curr_row + 1][col] == 0 {
+                        raster[curr_row + 1][col] = 5;
+                        raster[curr_row][col] = 0;
+                        curr_row += 1;
+                    }
+                }
+            }
+        }
+        count
     }
     /// Step the game state forward one frame
-    pub fn step(&mut self, raster: &mut Raster, seed: u128) {
+    pub fn step(&mut self, raster: &mut Raster, seed: u128) -> u8 {
         let mut rng = Pcg64::new_seed(seed);
         if self.falling_piece == [[0; 2]; 2] {
             self.falling_piece = get_random_tetromino(&mut rng);
@@ -280,6 +298,8 @@ impl GameState {
             // } else {
             self.drop_piece(raster);
             // }
+            return self.check_rows(raster);
         }
+        0
     }
 }
