@@ -13,32 +13,32 @@ The game works by looping while checking for inputs, generating rng seeds, stepp
 
 ```rust
 loop {
-        gal.delay.delay_ms(tick);
-        if let Some(true) = gal.buttons.read_a() {
-            game.move_left(&mut raster);
-        }
-        if let Some(true) = gal.buttons.read_b() {
-            game.move_right(&mut raster);
-        }
-        if let Some(true) = gal.logo.read_logo() {
-            game.rotate_piece(&mut raster);
-        }
-        let clr_rows = game.step(&mut raster, seed);
-        seed = rng.generate();
-        if clr_rows > 0 && clr_rows != 7 {
-            // Beep for each row cleared
-            repeat_beep(clr_rows, 75u16, &mut gal.delay);
-        } else if clr_rows == 7 {
-            // Game over
-            loop {
-                #[cfg(feature = "text")]
-                clear_display();
-                #[cfg(feature = "text")]
-                scroll_text("GAME OVER", &mut gal.delay);
-            }
-        }
-        display_frame(&raster);
+    gal.delay.delay_ms(tick);
+    if let Some(true) = gal.buttons.read_a() {
+        game.move_left(&mut raster);
     }
+    if let Some(true) = gal.buttons.read_b() {
+        game.move_right(&mut raster);
+    }
+    if let Some(true) = gal.logo.read_logo() {
+        game.rotate_piece(&mut raster);
+    }
+    let clr_rows = game.step(&mut raster, seed);
+    seed = rng.generate();
+    if clr_rows > 0 && clr_rows != 7 {
+        // Beep for each row cleared
+        repeat_beep(clr_rows, 75u16, &mut gal.delay);
+    } else if clr_rows == 7 {
+        // Game over
+        loop {
+            #[cfg(feature = "text")]
+            clear_display();
+            #[cfg(feature = "text")]
+            scroll_text("GAME OVER", &mut gal.delay);
+        }
+    }
+    display_frame(&raster);
+}
 ```
 
 The game step function returns `u8` values to represent whether the game is over or how many rows were cleared. I chose `7u8` as the value for game over when there is no screen present since the pixel display on the micro:bit v2 is only 5x5 pixels large.
