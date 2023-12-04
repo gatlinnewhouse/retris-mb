@@ -25,6 +25,10 @@ pub struct GameState {
     #[cfg(not(feature = "screen"))]
     falling_piece: [[u8; 2]; 2],
     /// Location of a piece, indexed by its bottom left corner
+    #[cfg(not(feature = "debug"))]
+    fall_loc: PieceLocation,
+    /// Location of a piece, indexed by its bottom left corner
+    #[cfg(feature = "debug")]
     pub fall_loc: PieceLocation,
 }
 
