@@ -159,8 +159,16 @@ impl GameState {
         let top_left = self.falling_piece[0][0];
         let top_right = self.falling_piece[0][1];
         // Pieces on the board possibly blocking the falling piece
-        let top_left_board = curr_screen[self.fall_loc.row][self.fall_loc.col];
-        let top_right_board = curr_screen[self.fall_loc.row][self.fall_loc.col + 1];
+        let top_left_board: u8;
+        let top_right_board: u8;
+        // If the falling row is 5, then we have a I piece in the top row
+        if self.fall_loc.row == 5 {
+            top_left_board = curr_screen[self.fall_loc.row - 1][self.fall_loc.col];
+            top_right_board = curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1];
+        } else {
+            top_left_board = curr_screen[self.fall_loc.row][self.fall_loc.col];
+            top_right_board = curr_screen[self.fall_loc.row][self.fall_loc.col + 1];
+        }
         // If either bottom corner is 1 and the falling location row is not 4 then
         // move the piece down one row, and increment the falling location row
         if bottom_left == 1 || bottom_right == 1 {
