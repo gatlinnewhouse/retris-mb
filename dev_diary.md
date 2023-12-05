@@ -44,4 +44,6 @@ Finally I cleaned up the [README](README.md) file to reflect the listed requirem
 
 Upon some research, it appears that unit testing in a `no_std` environment can be done but requires [some workarounds](https://stackoverflow.com/questions/28185854/how-do-i-test-crates-with-no-std).
 
+I decided against adding unit tests before submitting since this seemed like a bit of a hacky way around the `no_std` environment.
+
 I filmed, edited a little, and uploaded a presentation of the game to the repo and added a link to the video in the [README](README.md) file. I used git LFS to upload the video to GitHub.
