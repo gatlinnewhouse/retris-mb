@@ -82,3 +82,4 @@ cargo embed --release
 
 Demoing classic controls (buttons and logo touch) with the pixel display on the Micro:bit v2:
 
+[Video](videos/PRESENTATION.mp4)

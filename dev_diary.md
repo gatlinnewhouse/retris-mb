@@ -43,3 +43,5 @@ So I started playtesting a bit. Outside of some frustration with pieces being fa
 Finally I cleaned up the [README](README.md) file to reflect the listed requirements on Canvas. I only needed to add some testing of the code and a video to the repo to complete the assignment.
 
 Upon some research, it appears that unit testing in a `no_std` environment can be done but requires [some workarounds](https://stackoverflow.com/questions/28185854/how-do-i-test-crates-with-no-std).
+
+I filmed, edited a little, and uploaded a presentation of the game to the repo and added a link to the video in the [README](README.md) file. I used git LFS to upload the video to GitHub.
