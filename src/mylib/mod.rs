@@ -14,7 +14,9 @@ use microbit::{
     Board,
 };
 
+/// Module for the built-in speaker on the micro:bit v2
 pub mod beep;
+/// Module for the game logic
 pub mod game;
 mod rand;
 
@@ -22,12 +24,14 @@ mod rand;
 mod accel;
 #[cfg(feature = "buttons")]
 mod buttons;
+/// Module for displaying text on the built-in 5x5 pixeldisplay on the micro:bit v2
 #[cfg(feature = "text")]
 pub mod font;
 #[cfg(feature = "logo")]
 mod logo;
 #[cfg(feature = "text")]
 mod pendolino;
+/// Module for the built-in 5x5 pixeldisplay on the micro:bit v2
 #[cfg(not(feature = "screen"))]
 pub mod pixeldisplay;
 #[cfg(feature = "screen")]

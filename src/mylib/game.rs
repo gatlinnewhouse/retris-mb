@@ -13,13 +13,16 @@ use crate::mylib::tetrominos::rotate_clockwise;
 /// Location of a piece, indexed by its bottom left corner
 #[derive(Clone, Copy)]
 pub struct PieceLocation {
+    /// Current row of the bottom left corner of the falling piece
     pub row: usize,
+    /// Current column of the bottom left corner of the falling piece
     pub col: usize,
 }
 
 /// Initial location of a piece, starts at the top middle
 const INITIAL_LOC: PieceLocation = PieceLocation { row: 1, col: 2 };
 
+/// Game state struct for handling game logic
 pub struct GameState {
     /// Current piece falling
     #[cfg(not(feature = "screen"))]

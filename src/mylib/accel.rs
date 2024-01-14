@@ -13,6 +13,7 @@ use rtt_target::rprintln;
 /// Custom typedef for the accelerometer to shorten the typename
 type Sensor = Lsm303agr<I2cInterface<twim::Twim<TWIM0>>, MagOneShot>;
 
+/// Accelerometer struct for game inputs
 pub struct Accel {
     /// Accelerometer sensor
     pub accel: Sensor,
