@@ -64,13 +64,13 @@ fn play_game() -> ! {
     // Loop to play game
     loop {
         gal.delay.delay_ms(tick);
-        if let Some(true) = gal.buttons.read_a() {
+        if matches!(gal.buttons.read_a(), Some(true)) {
             game.move_left(&mut raster);
         }
-        if let Some(true) = gal.buttons.read_b() {
+        if matches!(gal.buttons.read_b(), Some(true)) {
             game.move_right(&mut raster);
         }
-        if let Some(true) = gal.logo.read_logo() {
+        if matches!(gal.logo.read_logo(), Some(true)) {
             game.rotate_piece(&mut raster);
         }
         let clr_rows = game.step(&mut raster, seed);
@@ -123,17 +123,17 @@ fn demo_inputs() -> ! {
         gal.delay.delay_ms(tick);
         let data = gal.accel.read_accel().unwrap();
         rprintln!("x {} y {} z {}", data.0, data.1, data.2);
-        if let Some(true) = gal.buttons.read_a() {
+        if matches!(gal.buttons.read_a(), Some(true)) {
             rprintln!("button a pressed");
             game.move_left(&mut raster);
             repeat_beep(1u8, 75u16, &mut gal.delay)
         }
-        if let Some(true) = gal.buttons.read_b() {
+        if matches!(gal.buttons.read_b(), Some(true)) {
             rprintln!("button b pressed");
             game.move_right(&mut raster);
             repeat_beep(2u8, 75u16, &mut gal.delay)
         }
-        if let Some(true) = gal.logo.read_logo() {
+        if matches!(gal.logo.read_logo(), Some(true)) {
             rprintln!("logo pressed");
             game.rotate_piece(&mut raster);
             repeat_beep(3u8, 75u16, &mut gal.delay)
