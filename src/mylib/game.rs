@@ -204,18 +204,7 @@ impl GameState {
                 }
             }
             // Set the current falling piece to 0 on the screen
-            if bottom_left == 1 {
-                curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
-            }
-            if bottom_right == 1 {
-                curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
-            }
-            if top_left == 1 {
-                curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
-            }
-            if top_right == 1 {
-                curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
-            }
+            self.erase_prior_piece(curr_screen, bottom_left, bottom_right, top_left, top_right);
         }
         // If both bottom corners are 0 and the falling location row is 4 then
         // move the piece down one row, and increment the falling location row
@@ -241,18 +230,42 @@ impl GameState {
                 // Otherwise move it down one row
                 self.fall_loc.row += 1;
                 // Set the current falling piece to 0 on the screen
-                if top_left == 1 {
-                    curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
-                }
-                if top_right == 1 {
-                    curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
-                }
+                self.erase_prior_piece(curr_screen, bottom_left, bottom_right, top_left, top_right);
             }
         }
         // Place the piece on the screen
         self.place_piece(curr_screen);
         // Return 0 if the game is not over
         0
+    }
+    /// Function to set the current falling piece to 0 on the screen
+    ///
+    /// # Arguments
+    /// * `curr_screen` - The current screen state
+    /// * `bottom_left` - The bottom left corner of the falling piece
+    /// * `bottom_right` - The bottom right corner of the falling piece
+    /// * `top_left` - The top left corner of the falling piece
+    /// * `top_right` - The top right corner of the falling piece
+    fn erase_prior_piece(
+        &mut self,
+        curr_screen: &mut [[u8; 5]; 5],
+        bottom_left: u8,
+        bottom_right: u8,
+        top_left: u8,
+        top_right: u8,
+    ) {
+        if bottom_left == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col] = 0;
+        }
+        if bottom_right == 1 {
+            curr_screen[self.fall_loc.row - 1][self.fall_loc.col + 1] = 0;
+        }
+        if top_left == 1 {
+            curr_screen[self.fall_loc.row - 2][self.fall_loc.col] = 0;
+        }
+        if top_right == 1 {
+            curr_screen[self.fall_loc.row - 2][self.fall_loc.col + 1] = 0;
+        }
     }
     /// Add the currently falling piece to the solid blocks on the screen
     /// and reset the falling piece to nothing, reset the fall location to initial
